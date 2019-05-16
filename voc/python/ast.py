@@ -99,7 +99,7 @@ class NameVisitor(ast.NodeVisitor):
 class LocalsVisitor(ast.NodeVisitor):
     def __init__(self, context):
         self.context = context
-        
+
     def visit_Name(self, node):
         if type(node.ctx) == ast.Store:
             if node.id not in self.context.local_vars:
@@ -189,18 +189,15 @@ class Visitor(ast.NodeVisitor):
                         return
                     index += 1
 
-
-    def generic_visit(self,node):
+    def generic_visit(self, node):
         # Catches node types that are not implemented
         # Expr calls this function directly and is meant to do so
         # Other node types mean that we are skipping something that we should not
         if type(node) != _ast.Expr:
             raise TypeError("Not translating node of type "+str(type(node)))
         super().generic_visit(node)
-        
-                    
-    def visit(self, node):
 
+    def visit(self, node):
         try:
             self.parse_yield(node)
             if id(node) in self.resolved_yield_expression.keys():
@@ -1808,7 +1805,7 @@ class Visitor(ast.NodeVisitor):
                         'Lorg/python/Object;'
                     )
                 )
-                
+
         yield_point = len(self.context.yield_points) + 1
 
         # Save the current stack and yield index
@@ -2267,8 +2264,6 @@ class Visitor(ast.NodeVisitor):
     def visit_Str(self, node):
         self.context.add_str(node.s)
 
-
-        
     @node_visitor
     def visit_Bytes(self, node):
         self.context.add_opcodes(
@@ -2488,7 +2483,6 @@ class Visitor(ast.NodeVisitor):
     def visit_JoinedStr(self, node):
         # Joined strs are new in python 3.6+ and are used in fstrings.
         # The easyiest way to handle them seems to be to transform them to "".join(*values)
-        
         transformed_node = _ast.Call(
                 lineno=node.lineno,
                 col_offset=node.col_offset,
@@ -2509,7 +2503,7 @@ class Visitor(ast.NodeVisitor):
                 ],
                 keywords=[],
             )
-        # pass on the handeling
+        # pass on the handling
         self.visit(transformed_node)
 
     @node_visitor
@@ -2548,7 +2542,7 @@ class Visitor(ast.NodeVisitor):
         else:
             raise ValueError("Conversion type %i not implemented for f-strings" % node.conversion)
 
-        formatspec =  node.format_spec or _ast.Str(lineno=node.lineno, col_offset=node.col_offset, s="")
+        formatspec = node.format_spec or _ast.Str(lineno=node.lineno, col_offset=node.col_offset, s="")
         transformed_node = _ast.Call(lineno=node.lineno,
                                      col_offset=node.col_offset,
                                      func=_ast.Attribute(
@@ -2560,10 +2554,9 @@ class Visitor(ast.NodeVisitor):
                                      ),
                                      args=[formatspec],
                                      keywords=[],
-        )
+                                     )
         self.visit(transformed_node)
 
-        
     @node_visitor
     def visit_Index(self, node):
         self.visit(node.value)
