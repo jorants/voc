@@ -2,7 +2,6 @@ import ast
 import _ast
 import copy
 import sys
-import traceback
 
 from ..java import opcodes as JavaOpcodes
 from .modules import Module
